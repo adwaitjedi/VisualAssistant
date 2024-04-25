@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object and Currency Detection</title>
+</head>
+<body>
+    <h1>Welcome to Object and Currency Detection</h1>
+    <button onclick="startObjectDetection()">Start Object Detection</button><br>
+    <button onclick="startCurrencyDetection()">Start Currency Detection</button><br>
+    <div id="output"></div>
+
+    <script>
+        function startObjectDetection() {
+            fetch('/start_object_detection');
+        }
+
+        function startCurrencyDetection() {
+            fetch('/start_currency_detection');
+        }
+
+        const outputDiv = document.getElementById('output');
+
+        function speak(message) {
+            const speech = new SpeechSynthesisUtterance(message);
+            speechSynthesis.speak(speech);
+        }
+
+        function listen() {
+            const recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+
+            recognition.onresult = function (event) {
+                const result = event.results[0][0].transcript.toLowerCase();
+                outputDiv.innerText = 'Command: ' + result;
+                if (result === 'start object detection' || result === 'begin object detection') {
+                    startObjectDetection();
+                } else if (result === 'start currency detection' || result === 'begin currency detection') {
+                    startCurrencyDetection();
+                }
+            };
+
+            recognition.start();
+        }
+
+        listen();
+    </script>
+</body>
+</html>
